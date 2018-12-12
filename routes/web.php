@@ -15,39 +15,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-Route::get('/hey', function()
-{
-    return 'Hello World';
-});
-
-Route::get('/hell', function() {
-    return view('greeting');
-});
-
-Route::get('/jan', function() {
-    return view('hello.greeting', ['name' => 'Janus']);
-});
-
 Route::get('/about', 'AboutController');
 
 Route::get('/test', 'TestController@index');
 
-Route::get('foo', ['uses' => 'TestController@fooIndex', 'as' => 'name']);
+Route::get('blog', ['uses' => 'PostsController@index', 'as' => 'blog']);
 
-Route::get('bar', 'TestController@barIndex');
+Route::get('blog/create', 'PostsController@create')->name('create');
+Route::post('blog/create', ['uses' => 'PostsController@store', 'as' => 'store']);
 
-Route::get('bax', 'TestController@baxIndex');
+Route::get('blog/{id}', 
+['uses' => 'PostsController@show', 'as' => 'show']);
 
-Route::get('baz', 'TestController@bazIndex');
+Route::delete('blog/{id}', 
+['uses' => 'PostsController@destroy', 'as' => 'destroy']);
 
-Route::get('bazuka', 'TestController@bazukaIndex');
-
-Route::any('foom', function () {
-    return 'Hello Foomar!';
-});
-
-Route::match(['get', 'post'], '/foobar', function () {
-    return 'Hello FooBar!';
-});
-  
+Route::get('blog/{id}/edit', 
+['uses' => 'PostsController@edit', 'as' => 'show']);
