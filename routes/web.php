@@ -17,15 +17,14 @@ Route::get('/', function () {
 
 Route::get('/about', 'AboutController');
 
-Route::get('/test', 'TestController@index');
+Route::get('blog', 'BlogController@index')->name('blog');
+Route::get('blog/{id}', 
+['uses' => 'BlogController@show', 'as' => 'show']);
 
-Route::get('blog', ['uses' => 'PostsController@index', 'as' => 'blog']);
 
 Route::get('blog/create', 'PostsController@create')->name('create');
 Route::post('blog/create', ['uses' => 'PostsController@store', 'as' => 'store']);
 
-Route::get('blog/{id}', 
-['uses' => 'PostsController@show', 'as' => 'show']);
 
 Route::delete('blog/{id}', 
 ['uses' => 'PostsController@destroy', 'as' => 'destroy']);
