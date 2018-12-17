@@ -21,13 +21,4 @@ Route::get('blog', 'BlogController@index')->name('blog');
 Route::get('blog/{id}', 
 ['uses' => 'BlogController@show', 'as' => 'show']);
 
-
-Route::get('blog/create', 'PostsController@create')->name('create');
-Route::post('blog/create', ['uses' => 'PostsController@store', 'as' => 'store']);
-
-
-Route::delete('blog/{id}', 
-['uses' => 'PostsController@destroy', 'as' => 'destroy']);
-
-Route::get('blog/{id}/edit', 
-['uses' => 'PostsController@edit', 'as' => 'show']);
+Route::resource('categories','Admin\CategoryController');
