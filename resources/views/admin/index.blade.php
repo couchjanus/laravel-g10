@@ -20,4 +20,6 @@
           </button>
         </div>
     </div>
+    <div class="table-responsive">
+    </div>
 @endsection

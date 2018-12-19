@@ -1,5 +1,15 @@
 body {
   font-size: .875rem;
+  
+}
+.container-fluid{
+  position: relative;
+  
+}
+
+.help-block{
+  color: indianred;
+  font-weight: 700;
 }
 
 .feather {
@@ -14,7 +24,7 @@ body {
 
 .sidebar {
   position: fixed;
-  top: 0;
+  top: 4em;
   bottom: 0;
   left: 0;
   z-index: 100; /* Behind the navbar */

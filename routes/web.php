@@ -22,3 +22,5 @@ Route::get('blog/{id}',
 ['uses' => 'BlogController@show', 'as' => 'show']);
 
 Route::resource('categories','Admin\CategoryController');
+Route::resource('tags','Admin\TagController');
+Route::resource('posts','Admin\PostController');

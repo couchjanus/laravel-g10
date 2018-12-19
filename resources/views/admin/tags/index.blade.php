@@ -1,65 +1,59 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container">
-
-        @if (Session::get('message') != Null)
-        <div class="row">
-            <div class="col-md-9">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    {{ Session::get('message') }}
-                </div>
-            </div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Tags</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group mr-2">
+            <a href="{{ url('/tags/create') }}" title="Add New Tag">
+                <button class="btn btn-sm btn-outline-success"><span data-feather="plus"></span> Add New</button>
+            </a>
+            <button class="btn btn-sm btn-outline-secondary">Export</button>
+          </div>
+          
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+          </button>
         </div>
+    </div>
+
+    <div class="table-responsive">
+
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span class="badge badge-pill badge-success">Success</span> {!! $message !!}
+            </div>
         @endif
-    
-        <div class="row">
-            @include('admin.sidebar')
 
-            <div class="col-md-9">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Tags</div>
-                    <div class="panel-body">
-                        <a href="{{ url('/tags/create') }}" class="btn btn-success btn-sm" title="Add New Tag">
-                            <i class="fa fa-plus" aria-hidden="true"></i> Add New
-                        </a>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Posted On</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($tags as $tag)
+                    <tr>
+                        <td>{{ $tag->name }}</td>
+                        <td>{{ date('d F Y', strtotime($tag->created_at)) }}</td>
+                        <td>
+                            <a title="Read tag" href="{{ route('tags.show', ['id'=> $tag->id]) }}">
+                            <button class="btn btn-sm btn-outline-primary">
+                            <span data-feather="eye"></span></button></a>
+                            <a title="Edit tag" href="{{ route('tags.edit', ['id'=> $tag->id]) }}" class="btn btn-outline-warning"><span data-feather="edit"></span></a>
+                            <button title="Delete tag" type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#delete_tag_{{ $tag->id  }}"><span data-feather="trash"></span></button>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
-                        <br/>
-                        <br/>
-                        <div class="table-responsive">
-                  
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Posted On</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($tags as $tag)
-                                    <tr>
-                                        <td>{{ $tag->name }}</td>
-                                        <td>{{ date('d F Y', strtotime($tag->created_at)) }}</td>
-                                        <td>
-                                            <a title="Read tag" href="{{ route('tags.show', ['id'=> $tag->id]) }}" class="btn btn-primary"><span class="fa fa-newspaper-o"></span></a>
-                                            <a title="Edit tag" href="{{ route('tags.edit', ['id'=> $tag->id]) }}" class="btn btn-warning"><span class="fa fa-edit"></span></a>
-                                            <button title="Delete tag" type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_tag_{{ $tag->id  }}"><span class="fa fa-trash-o"></span></button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
     </div>
 
     @foreach($tags as $tag)
