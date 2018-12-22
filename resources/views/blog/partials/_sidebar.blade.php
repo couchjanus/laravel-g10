@@ -23,6 +23,15 @@
         </div>
 
         <div class="p-3">
+          <h4 class="font-italic">Categories</h4>
+          <ol class="list-unstyled">
+            @foreach(\App\Category::all() as $category)
+            <li><a href="{{ route('blog.category', $category->id) }}">{{ $category->name }}</a></li>
+            @endforeach
+          </ol>
+        </div>
+
+        <div class="p-3">
           <h4 class="font-italic">Elsewhere</h4>
           <ol class="list-unstyled">
             <li><a href="#">GitHub</a></li>

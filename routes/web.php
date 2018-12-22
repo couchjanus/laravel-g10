@@ -15,11 +15,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Route::get('/about', 'AboutController');
 
 Route::get('blog', 'BlogController@index')->name('blog');
-Route::get('blog/{id}', 
-['uses' => 'BlogController@show', 'as' => 'show']);
+Route::get('blogcat/{id}', 'BlogController@getPostsByCategory')->name('blog.category');
+Route::get('blog/{slug}', 
+['uses' => 'BlogController@showBySlug', 'as' => 'post.show']);
 
 Route::resource('categories','Admin\CategoryController');
 Route::resource('tags','Admin\TagController');

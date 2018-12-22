@@ -16,42 +16,8 @@ class BlogController extends Controller
 
     public function index()
     {
-        $posts = DB::select('select * from posts');
-        // $posts = DB::table('posts')->orderBy('id', 'desc')->get();
-        
+        $posts = DB::table('posts')->where('is_active', true)->orderBy('updated_at', 'desc')->paginate(5);
 
-        // $posts = DB::table('posts')->where([['is_active', '=', '1'],['id', '>', '60'],])->get();
- 
-        // $posts = DB::table('posts')->where('id', '>', 90)->orWhere('is_active', true)->get();
-
-        // $posts = DB::table('posts')->whereBetween('id', [1, 10])->get();
-        // $posts = DB::table('posts')->whereNotBetween('id', [10, 100])->get();
-
-        // $posts = DB::table('posts')->whereIn('category_id', [1, 2, 3])->get();
-
-        // $posts = DB::table('posts')->whereNotIn('category_id', [1, 2, 3])->get();
-
-        // $posts = DB::table('posts')->whereNull('updated_at')->get();
-
-        // $posts = DB::table('posts')->whereNotNull('updated_at')->get();
-
-        // $posts = DB::table('posts')->whereDate('created_at', '2018-05-17')->get();
-
-        // $posts = DB::table('posts')->whereMonth('created_at', '12')->get();
-
-        // $posts = DB::table('posts')->whereDay('created_at', '12')->get();
-
-        // $posts = DB::table('posts')->whereYear('created_at', '2018')->get();
-
-        // $posts = DB::table('posts')->whereColumn('updated_at', '>', 'created_at')->get();
-
-        // $posts = DB::table('posts')->orderBy('id', 'desc')->take(5)->get();
-        // $posts = DB::table('posts')->orderBy('id', 'desc')->skip(10)->take(5)->get();
-        // $posts = DB::table('posts')->offset(10)->limit(5)->get();
-
-        
-        // $posts = DB::table('posts')->paginate(7);
-        // $posts = DB::table('posts')->paginate(7)->onEachSide(1);
         return view('blog.index', ['posts' => $posts]);
     }
 
@@ -64,9 +30,58 @@ class BlogController extends Controller
     public function show($id)
     {
         $post = DB::table("posts")->where("id", $id)->first();
-        // $post = DB::table('posts')->latest()->first();
-        // $post = DB::table('posts')->oldest()->first();
         return view('blog.show', ['post' => $post]);
     }
+
+    // PostsController, метод showBySlug:
+    public function showBySlug($slug)
+    {
+        /**
+            * Вначале мы проверяем, не является ли слаг числом.
+            * Часто слаги внедряют в программу уже после того,
+            * как был другой механизм построения пути.
+            * Например, через числовые индексы.
+            * Тогда может получится ситуация, что пользователь,
+            * зайдя на сайт по старой ссылке, увидит 404 ошибку,
+            * что такой страницы не существует.
+        */
+        if (is_numeric($slug)) {
+            // Get post for slug.
+            $post = \App\Post::findOrFail($slug);
+            return Redirect::to(route('blog.show', $post->slug), 301);
+            // 301 редирект со старой страницы, на новую.
+        }
+
+        // Get post for slug.
+        $post = \App\Post::whereSlug($slug)->firstOrFail();
+
+        // var_dump($post->category->name);
+
+        return view(
+            'blog.show',
+            [
+                'post' => $post,
+                'hescomment' => true
+            ]
+        );
+    }
+
+    public function getPostsByCategory($categoryId)
+    {
+        $posts = \App\Category::find($categoryId)->posts()->where('is_active', true)->get();
+        // $posts = \App\Category::find($categoryId)->posts()->where('is_active', true)->orderBy('updated_at', 'desc')->paginate(5);
+        // var_dump($posts);
+        // return view('blog.index', ['posts' => $posts]);
+    }
+
+
+    // public function getCategories()
+    // {
+    //     $categories = \App\Category::orderBy('name')->get();
+        
+    //     var_dump($categories);
+    //     // return compact('categories');
+    // }
+
 
 }
