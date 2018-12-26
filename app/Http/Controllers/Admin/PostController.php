@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Category;
 
+use App\Http\Requests\PostStoreFormRequest;
+
 class PostController extends Controller
 {
     /**
@@ -17,7 +19,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::latest()->paginate(5);
-        return view('admin.posts.index',compact('posts'))   ->with('i', (request()->input('page', 1)-1)*5);
+        return view('admin.posts.index',compact('posts'))->with('i', (request()->input('page', 1)-1)*5);
     }
 
     /**
@@ -27,8 +29,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        // $categories = Category::all();
-        return view('admin.posts.create')->withCategories(Category::all());
+        $tags = \App\Tag::all();//get()->pluck('name', 'id');
+        return view('admin.posts.create')->withCategories(Category::all())->withTags($tags);
     }
 
     /**
@@ -37,20 +39,13 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostStoreFormRequest $request)
     {
-        $this->validate(
-            $request,
-            [
-               'title' => 'required|unique:posts|max:255|min:3',
-               'content' => 'required',
-            ]
-        );
-        
         // $request->validate(['title' => 'required|unique:posts|max:255|min:3','content' => 'required',]);
         
-        Post::create($request->all());
-        
+        $post = Post::create($request->all());
+        $post->tags()->sync((array)$request->input('tag'));
+
         // Post::create(['title' => $request->title, 'content' => $request->content, 'category_id' => $request->category_id, is_active' => $request->is_active!= '' ?$request->get('is_active') : True]);
 
         return redirect()->route('posts.index')->with('success','Post created successfully.');
@@ -75,7 +70,8 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        return view('admin.posts.edit')->withPost($post)->withCategories(Category::pluck('name', 'id'));
+        $tags = \App\Tag::get()->pluck('name', 'id');
+        return view('admin.posts.edit')->withPost($post)->withCategories(Category::pluck('name', 'id'))->withTags($tags);
     }
 
     /**
@@ -95,6 +91,9 @@ class PostController extends Controller
             ]
         );
         $post->update($request->all());
+
+        $post->tags()->sync((array)$request->input('tag'));
+     
         return redirect()->route('posts.index')
             ->with('success','Post updated successfully');
     }
@@ -107,6 +106,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $post->tags()->detach();
         $post->delete();
         return redirect()->route('posts.index')
             ->with('success','Post deleted successfully');

@@ -68,20 +68,8 @@ class BlogController extends Controller
 
     public function getPostsByCategory($categoryId)
     {
-        $posts = \App\Category::find($categoryId)->posts()->where('is_active', true)->get();
-        // $posts = \App\Category::find($categoryId)->posts()->where('is_active', true)->orderBy('updated_at', 'desc')->paginate(5);
-        // var_dump($posts);
-        // return view('blog.index', ['posts' => $posts]);
+        $posts = \App\Category::find($categoryId)->posts()->where('is_active', true)->orderBy('updated_at', 'desc')->paginate(5);
+        return view('blog.index', ['posts' => $posts]);
     }
-
-
-    // public function getCategories()
-    // {
-    //     $categories = \App\Category::orderBy('name')->get();
-        
-    //     var_dump($categories);
-    //     // return compact('categories');
-    // }
-
 
 }

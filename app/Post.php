@@ -13,6 +13,7 @@ class Post extends Model
         'title', 'content', 'is_active', 'category_id'
     ];
     
+    protected $touches = ['tags'];
 
     /**
      * Return the sluggable configuration array for this model.
@@ -30,8 +31,12 @@ class Post extends Model
 
     public function category()
     {
-        return $this->belongsTo('App\Category');
-        // return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 
 }
