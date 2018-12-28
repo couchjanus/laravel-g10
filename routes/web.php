@@ -26,3 +26,16 @@ Route::get('blog/{slug}',
 Route::resource('categories','Admin\CategoryController');
 Route::resource('tags','Admin\TagController');
 Route::resource('posts','Admin\PostController');
+Route::resource('users','Admin\UserController');
+
+Route::resource('profile','ProfileController');
+
+Route::get('/trashed', 'Admin\UserController@trashed')->name('users.trashed');
+
+Route::post('/restore/{id}', 'Admin\UserController@restore')->name('users.restore');
+
+Route::delete('/userdestroy/{id}', 'Admin\UserController@userdestroy')->name('user.force.destroy');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
