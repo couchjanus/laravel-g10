@@ -39,3 +39,19 @@ Route::delete('/userdestroy/{id}', 'Admin\UserController@userdestroy')->name('us
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/feedback', 'FeedbackController@create');
+Route::get('/feedbacks', 'Admin\FeedbackController@index')->name('feedbacks.index');
+Route::post('/feedback/create', 'FeedbackController@store');
+Route::get('/feedbacks/delete/{id}', 'Admin\FeedbackController@destroy');
+
+// Socialite Register Routes
+
+Route::get('social/{provider}', 'Auth\SocialController@redirect')->name('social.redirect');
+Route::get('social/{provider}/callback', 'Auth\SocialController@callback')->name('social.callback');
+
+// Можно использовать метод middleware для назначения посредника на маршрут:
+// Route::get('admin', 'Admin\DashboardController')->middleware('auth');
+
+// Для назначения нескольких посредников для маршрута:
+Route::get('admin', 'Admin\DashboardController')->middleware('auth', 'admin');

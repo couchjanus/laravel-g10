@@ -51,5 +51,9 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
+    public function social()
+    {
+        return $this->hasMany('App\Social');
+    }
 
 }

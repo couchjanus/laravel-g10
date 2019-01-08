@@ -1,5 +1,15 @@
 @extends('layouts.app')
 
+@section('head')
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
+    <script>
+        function onSubmit(token) {
+            document.getElementById("register-form").submit();
+        }
+    </script>
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -8,7 +18,7 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('register') }}" id='register-form'>
                         @csrf
 
                         <div class="form-group row">
@@ -60,13 +70,18 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
+                        <div class="form-group float-left">
+                            <div class="g-recaptcha" id="register-recaptcha" data-sitekey="{{ env('GOOGLE_RECAPTCHA_KEY')  }}"></div>
+                            @if ($errors->has('g-recaptcha-response'))
+                                <span class="invalid-register" style="display: block;">
+                                    <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group row float-right btn-feedback-block">
+                                <button type="submit" class="btn btn-outline-primary btn-lg" data-callback='onSubmit'>
                                     {{ __('Register') }}
                                 </button>
-                            </div>
                         </div>
                     </form>
                 </div>
