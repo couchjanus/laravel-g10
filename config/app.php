@@ -176,6 +176,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\WidgetServiceProvider::class,
+        App\Providers\OnlineServiceProvider::class,
 
     ],
 
@@ -228,6 +229,7 @@ return [
 
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Online' => App\Helpers\Online::class,
 
     ],
 

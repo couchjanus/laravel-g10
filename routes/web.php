@@ -55,3 +55,5 @@ Route::get('social/{provider}/callback', 'Auth\SocialController@callback')->name
 
 // Для назначения нескольких посредников для маршрута:
 Route::get('admin', 'Admin\DashboardController')->middleware('auth', 'admin');
+
+

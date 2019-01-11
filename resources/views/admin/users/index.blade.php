@@ -31,9 +31,13 @@
         @endif
             
         <table class="table table-hover">
+            @if($users->count() === 0)
+                <div class="well text-center">No users found.</div>
+            @else
                 <thead>
                   <tr>
                     <th>#</th>
+                    <th>Online</th>
                     <th>Username</th>
                     <th>Email</th>
                     <th>Action</th>
@@ -44,6 +48,13 @@
                     @foreach($users as $user)
                     <tr>
                         <td>{{ $user->id }}</td>
+                        <td>
+                            @if($user->isOnline())
+                                <span style="color:green">Online</span>
+                            @else
+                                <span style="color:red">Offline</span>
+                            @endif
+                        </td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
@@ -87,5 +98,6 @@
         <div class="pagination justify-content-center mb-4">
             {{ $users->links() }}
         </div>
+        @endif
     </div>
 @endsection
