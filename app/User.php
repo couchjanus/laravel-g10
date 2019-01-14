@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Hash;
 use Cache;
 
-class User extends Authenticatable
+// class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
     use SoftDeletes;

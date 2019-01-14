@@ -38,6 +38,8 @@ Route::delete('/userdestroy/{id}', 'Admin\UserController@userdestroy')->name('us
 
 Auth::routes();
 
+Auth::routes(['verify' => true]);
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/feedback', 'FeedbackController@create');
@@ -57,3 +59,32 @@ Route::get('social/{provider}/callback', 'Auth\SocialController@callback')->name
 Route::get('admin', 'Admin\DashboardController')->middleware('auth', 'admin');
 
 
+// routes/web.php
+
+// Route::get('/reminder', function () {
+//     return new App\Mail\Reminder();
+// });
+
+Route::get('/reminder', function () {
+    return new App\Mail\Reminder('Blahamuha');
+});
+
+// Route::get('/order', function () {
+//     return new App\Mail\OrderShipped();
+// });
+
+Route::get('/order', function () {
+
+    $invoice = App\Order::find(1);
+    
+    // return (new App\Mail\OrderShipped($invoice))->render();
+
+    return new App\Mail\OrderShipped($invoice);
+
+});
+
+Route::get('ship', 
+   ['as' => 'order.index', 'uses' => 'OrderController@index']);
+
+Route::post('ship/{id}', 
+   ['as' => 'order.ship', 'uses' => 'OrderController@ship']);
