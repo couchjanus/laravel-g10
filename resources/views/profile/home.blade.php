@@ -18,6 +18,8 @@
                     @endif
                     You are logged in!
                     <a href="{{ route('profile.edit', ['id'=> Auth::user()->profile]) }}">Edit profile</a>
+
+                    <a href="{{ route('blog.list') }}">My Blog Posts</a>
                 </div>
             </div>
         </div>

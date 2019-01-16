@@ -19,6 +19,12 @@ Route::get('/', function () {
 Route::get('/about', 'AboutController');
 
 Route::get('blog', 'BlogController@index')->name('blog');
+
+Route::get('myblog', 'BlogController@list')->name('blog.list');
+Route::get('myblog/{post}/edit', 'BlogController@edit')->name('blog.edit');
+Route::put('myblog/{post}', 'BlogController@update')->name('blog.update');
+
+
 Route::get('blogcat/{id}', 'BlogController@getPostsByCategory')->name('blog.category');
 Route::get('blog/{slug}', 
 ['uses' => 'BlogController@showBySlug', 'as' => 'post.show']);
@@ -88,3 +94,10 @@ Route::get('ship',
 
 Route::post('ship/{id}', 
    ['as' => 'order.ship', 'uses' => 'OrderController@ship']);
+
+
+Route::get('post/view',   'PostsController@view');
+Route::get('post/create', 'PostsController@create');
+Route::get('post/edit',   'PostsController@edit');
+Route::get('post/update', 'PostsController@update');
+Route::get('post/delete', 'PostsController@delete');

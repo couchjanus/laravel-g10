@@ -1,5 +1,5 @@
 truncate table posts restart identity;
-
+truncate table posts restart identity cascade;
 
 truncate table tags restart identity;
 

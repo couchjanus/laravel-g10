@@ -44,7 +44,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        $roles = \App\Role::get()->pluck('name', 'id');
+        return view('admin.users.create')->withRoles($roles);;
     }
 
     /**
@@ -90,7 +91,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('admin.users.edit',compact('user'));
+        $roles = \App\Role::get()->pluck('name', 'id');
+      
+        return view('admin.users.edit')->withUser($user)->withRoles($roles);
+
+        // return view('admin.users.edit',compact('user'));
     }
 
     /**
@@ -102,9 +107,16 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->update($request->all());
-        return redirect()->route('users.index')
-                ->with('success','User updated successfully');
+        // $user->update($request->all());
+
+        $user->update($request->except('_method', '_token', 'role'));
+        $roles = $request->input('roles') ? $request->input('roles') : [];
+        $user->roles()->sync($request->roles);
+
+        return redirect(route('users.index'))->with('success','User updated successfully');
+ 
+        // return redirect()->route('users.index')
+        //         ->with('success','User updated successfully');
 
     }
 
