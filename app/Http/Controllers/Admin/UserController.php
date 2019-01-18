@@ -8,9 +8,14 @@ use App\User;
 use App\Http\Requests\UserStoreFormRequest;
 use Hash; 
 use App\Profile;
+use Illuminate\Foundation\Auth\VerifiesEmails;
+
+use App\Http\Requests\UpdateUserRequestForm;
 
 class UserController extends Controller
 {
+    use VerifiesEmails;
+
     /**
      * Display a listing of the resource.
      *
@@ -54,20 +59,30 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserStoreFormRequest $request)
+    public function store(Request $request)
     {
-        // User::create($request->all());
+        
+
+        if ($request['is_admin']) {
+            $is_admin->$request['is_admin'];
+        }
 
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
+            'is_admin' => $is_admin,
         ]);
+
+        $user->roles()->sync($request->input('role_list'), false);
+        
+        if ($request['verify']) {
+            $user->markEmailAsVerified();
+        }
+        
 
         $profile = new Profile();
         $user->profile()->save($profile);
-        // $user->save();
- 
         return redirect()->route('users.index')->with('success','User created successfully.');
   
     }
@@ -89,14 +104,12 @@ class UserController extends Controller
      * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
-    {
-        $roles = \App\Role::get()->pluck('name', 'id');
-      
-        return view('admin.users.edit')->withUser($user)->withRoles($roles);
-
-        // return view('admin.users.edit',compact('user'));
-    }
+        public function edit(User $user)
+        {
+            $verify = $user->email_verified_at ? true : false;
+            $roles = \App\Role::get()->pluck('name', 'id');
+            return view('admin.users.edit')->withUser($user)->withRoles($roles)->withVerify($verify);
+        }
 
     /**
      * Update the specified resource in storage.
@@ -107,17 +120,30 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // $user->update($request->all());
+        
+        $this->validate(
+            $request,
+            [
+                'name' => 'required|min:3|max:20',
+                'password' => 'required|min:6|max:20',
+                'email' => 'required|email|max:255|unique:users,email,'.$user->id . ',id'
+            ]
+        );
 
-        $user->update($request->except('_method', '_token', 'role'));
+        $user->update([
+            'name' => $request['name'],
+            'email' => $user->email,
+            'password' => Hash::make($request['password']),
+        ]);
+
+        if ($request['verify']) {
+            $user->markEmailAsVerified();
+        }
+        
         $roles = $request->input('roles') ? $request->input('roles') : [];
         $user->roles()->sync($request->roles);
 
         return redirect(route('users.index'))->with('success','User updated successfully');
- 
-        // return redirect()->route('users.index')
-        //         ->with('success','User updated successfully');
-
     }
 
     /**
@@ -146,5 +172,4 @@ class UserController extends Controller
                 ->with('success','User deleted successfully');
 
     }
-       
 }

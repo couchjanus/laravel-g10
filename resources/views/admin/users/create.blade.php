@@ -79,7 +79,28 @@
           </span>
         @endif
       </div>
+      <div class="form-group">
+        {!! Form::label('role_list', 'Select Roles*', array('class' => 'control-label')) !!}
+        {!! Form::select('role_list[]', $roles, null, ['id' => 'role_list', 'class' => 'form-control select2', 'multiple']) !!}
+        @if ($errors->has('roles'))
+          <span class="help-block">
+            <strong>{{ $errors->first('roles') }}</strong>
+          </span>
+        @endif
+      </div>
+
+      <div class="form-group row">
+          <div class="alert alert-warning" role="alert">
+            {!! Form::label('is_admin', 'Is Admin?', array('class' => 'control-label')) !!}
+            {!! Form::checkbox('is_admin', 'value', false, ['class' => 'form-control']) !!}
+          </div>
       
+          <div class="alert alert-danger" role="alert">
+            {!! Form::label('verify', 'Aactive', array('class' => 'control-label')) !!}
+            {!! Form::checkbox('verify', 'value', false, ['class' => 'form-control']) !!}
+          </div>
+      </div>
+
       <div class="form-group row">
         {!! Form::button('<span data-feather="save"></span>&nbsp;' . 'Create User', array('class' => 'btn btn-success btn-flat margin-bottom-1 pull-right','type' => 'submit', )) !!}
       </div>
@@ -87,4 +108,12 @@
     {!! Form::close() !!}
 
   </div>
+@endsection
+@section('scripts')
+    @parent
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>
 @endsection

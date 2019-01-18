@@ -21,7 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'is_admin'
     ];
 
     /**
@@ -68,6 +68,31 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Role::class);
     }
  
+    public function permissions()
+    {
+       return $this->hasManyThrough('App\Permission', 'App\Role');
+    }
 
+    /**
+     * Checks a Permission
+     */
+    public function isSuperVisor()
+    {
+        if ($this->roles->contains('slug', 'admin')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function hasRole($role)
+    {
+        if ($this->isSuperVisor()) {
+            return true;
+        }
+        if (is_string($role)) {
+            return $this->role->contains('slug', $role);
+        }
+        return !! $this->roles->intersect($role)->count();
+    }
 
 }

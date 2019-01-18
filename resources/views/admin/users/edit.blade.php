@@ -2,115 +2,119 @@
 
 @section('content')
 
-<div class="container-fluid">
-  <div class="animated fadeIn">
-      
-      @if (Session::get('message') != Null)
-        <div class="row">
-            <div class="col-md-9">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    {{ Session::get('message') }}
-                </div>
-            </div>
-        </div>
-      @endif
-
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <strong>Edit</strong> Post
-              <a href="{{ route('posts.index') }}" class="btn btn-success btn-sm" title="All Posts">
-                  <i class="fa fa-arrow-left" aria-hidden="true"></i> Go Back
-              </a>
-          </div>
-          
-          <form action="{{ route('posts.update',['id' => $post->id]) }}" method="post" enctype="multipart/form-data" class="form-horizontal">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="_method" value="PUT">
-            <div class="card-body">
-              
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="title">Post Title</label>
-                <div class="col-md-9">
-                  <input type="text" id="title" name="title" class="form-control" value="{{ $post->title }}">
-                  <span class="help-block">Enter Post Title</span>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="disabled-input">Post Slug</label>
-                <div class="col-md-9">
-                  <input type="text" id="disabled-input" name="disabled-input" class="form-control" value="{{ $post->slug }}" disabled="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="content">Post Content</label>
-                <div class="col-md-9">
-                  <textarea id="content" name="content" rows="9" class="form-control">{{ $post->content }}</textarea>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="category_id">Post Category</label>
-                <div class="col-md-9">
-                  <select id="category_id" name="category_id" class="form-control">
-                    @foreach ($categories as $key => $value)
-                        <option value="{{ $key }}"
-                            @if ($key == old('category_id', $post->category_id))
-                            selected="selected"
-                            @endif
-                            >{{ $value }}
-                        </option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">Is Active</label>
-                <div class="col-md-9">
-                  <label class="radio-inline" for="inline-radio1">
-                    <input type="radio" id="inline-radio1" name="is_active" value="1" @if (old('is_active', $post->is_active)) checked="checked" @endif> Yes
-                  </label>
-                  <label class="radio-inline" for="inline-radio2">
-                    <input type="radio" id="inline-radio2" name="is_active" value="0"> No
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="tags">Post Tags</label>
-                <div class="col-md-9">
-                  <select name="tags[]" id="tags" class="form-control state-tags-multiple" multiple="multiple">
-
-                    @foreach($tags as $key => $value)
-                      <option value="{{ $key }}" 
-                       {{ (collect(old('tags'))->contains($key)) ? 'selected':'' }}>
-                       {{ $value }}
-                      </option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="card-footer">
-              <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
-              <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Reset</button>
-            </div>
-          </form>
-        </div>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2">Edit User</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <a href="{{ route('users.index') }}" title="All users">
+            <button class="btn btn-sm btn-outline-success"><span data-feather="arrow-left"></span>
+                 Go Back</button>
+        </a>
+        <button class="btn btn-sm btn-outline-secondary">Export</button>
       </div>
+
+      <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+        <span data-feather="calendar"></span>
+        This week
+      </button>
     </div>
   </div>
-</div>
+
+  <div class="table-responsive col-12">
+    @if (Session::get('errors') != Null)
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{  $errors->first() }}
+            </div>
+    @endif
+    
+    {!! Form::model($user, ['method' => 'PUT', 'route' => ['users.update', $user->id]]) !!}
+      <div class="form-group has-feedback row {{ $errors->has('name') ? ' has-error ' : '' }}">
+          {!! Form::label('name', 'User Name', array('class' => 'col-3 control-label')); !!}
+          {!! Form::text('name', old('name'), array('id' => 'name', 'class' => 'form-control col-9')) !!}
+          <label class="input-group-addon" for="name"><i class="fa fa-fw-user" aria-hidden="true"></i></label>
+          
+          @if ($errors->has('name'))
+          <span class="help-block">
+            <strong>{{ $errors->first('name') }}</strong>
+          </span>
+          @endif
+      </div>
+
+      <div class="form-group has-feedback row {{ $errors->has('email') ? ' has-error ' : '' }}">
+        {!! Form::label('email', 'User Email', array('class' => 'col-3 control-label')); !!}
+              
+        {!! Form::text('email', $user->email, array('id' => 'email', 'class' => 'form-control col-9', 'placeholder' => 'User email')) !!}
+        <label class="input-group-addon" for="email"><i class="fa fa-fw {{ trans('forms.create_user_icon_email') }}" aria-hidden="true"></i></label>
+              
+        @if ($errors->has('email'))
+          <span class="help-block">
+            <strong>{{ $errors->first('email') }}</strong>
+          </span>
+        @endif
+      </div>
+            
+      <div class="form-group has-feedback row {{ $errors->has('password') ? ' has-error ' : '' }}">
+        {!! Form::label('password', 'Password', array('class' => 'col-3 control-label')); !!}
+              
+        {!! Form::password('password', array('id' => 'password', 'class' => 'form-control col-9', 'placeholder' => 'password')) !!}
+        <label class="input-group-addon" for="password"><i class="fa fa-fw" aria-hidden="true"></i></label>
+        @if ($errors->has('password'))
+                  <span class="help-block">
+                      <strong>{{ $errors->first('password') }}</strong>
+                  </span>
+        @endif
+      </div>
+
+      <div class="form-group has-feedback row {{ $errors->has('password_confirmation') ? ' has-error ' : '' }}">
+        {!! Form::label('password_confirmation', 'Password Confirmation', array('class' => 'col-3 control-label')); !!}
+        {!! Form::password('password_confirmation', array('id' => 'password_confirmation', 'class' => 'form-control col-9', 'placeholder' => 'password confirmation')) !!}
+        <label class="input-group-addon" for="password_confirmation"><i class="fa fa-fw" aria-hidden="true"></i></label>
+              
+        @if ($errors->has('password_confirmation'))
+          <span class="help-block">
+            <strong>{{ $errors->first('password_confirmation') }}</strong>
+          </span>
+        @endif
+      </div>
+      <div class="form-group">
+        {!! Form::label('role_list', 'Select Roles*', array('class' => 'control-label')) !!}
+        {!! Form::select('role_list[]', $roles, $user->roles, ['id' => 'role_list', 'class' => 'form-control select2', 'multiple']) !!}
+
+        @if ($errors->has('roles'))
+          <span class="help-block">
+            <strong>{{ $errors->first('roles') }}</strong>
+          </span>
+        @endif
+      </div>
+
+      <div class="form-group row">
+          <div class="alert alert-warning" role="alert">
+            {!! Form::label('is_admin', 'Is Admin?', array('class' => 'control-label')) !!}
+            {!! Form::checkbox('is_admin', 'value', $user->is_admin, ['class' => 'form-control']) !!}
+          </div>
+      
+          <div class="alert alert-danger" role="alert">
+            {!! Form::label('verify', 'Aactive', array('class' => 'control-label')) !!}
+            {!! Form::checkbox('verify', 'value', $verify, ['class' => 'form-control']) !!}
+          </div>
+      </div>
+
+      <div class="form-group row">
+        {!! Form::button('<span data-feather="save"></span>&nbsp;' . 'Update User', array('class' => 'btn btn-success btn-flat margin-bottom-1 pull-right','type' => 'submit', )) !!}
+      </div>
+          
+    {!! Form::close() !!}
+
+  </div>
 @endsection
 @section('scripts')
-<script>
-        $('').select2({
-            placeholder: 'Choose A Tag',
-            tags: true 
+    @parent
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
         });
-        $('#tags').select2().val({!! json_encode($post->tags()->allRelatedIds()->toArray()) !!}).trigger('change');
-</script>
+    </script>
 @endsection

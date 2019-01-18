@@ -5,13 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-class Role extends Model
+class Permission extends Model
 {
     use Sluggable;
-
+ 
     protected $fillable = ['name', 'description'];
 
-    // Создание уникального slug
     public function sluggable()
     {
         return [
@@ -21,14 +20,18 @@ class Role extends Model
         ];
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany('App\Role');
+    }
+
     public function users()
     {
-        return $this->belongsToMany('App\User');
+        return $this->hasManyThrough('App\User', 'App\Role');
     }
 
-    public function permissions()
-    {
-        return $this->belongsToMany('App\Permission');
-    }
+
 
 }
+
+   

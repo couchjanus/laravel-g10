@@ -33,6 +33,10 @@ Route::resource('categories','Admin\CategoryController');
 Route::resource('tags','Admin\TagController');
 Route::resource('posts','Admin\PostController');
 Route::resource('users','Admin\UserController');
+Route::resource('permissions','Admin\PermissionController');
+Route::resource('roles','Admin\RoleController');
+
+Route::delete('massDestroy','Admin\RoleController@massDestroy')->name('mass.destroy');
 
 Route::resource('profile','ProfileController');
 
