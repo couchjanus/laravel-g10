@@ -34,7 +34,7 @@
             </div>
         @endif
 
-        <form action="{{ route('posts.store') }}" method="post">
+        <form action="{{ route('posts.store') }}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="card">
                 <div class="card-block">
@@ -56,6 +56,11 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <image-component></image-component> 
+                   </div>
+                  
                     
                     <div class="form-group">
                         <label for="selectall-tag" class= 'control-label'>Select tags</label>

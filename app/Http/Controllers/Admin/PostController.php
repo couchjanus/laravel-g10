@@ -41,12 +41,35 @@ class PostController extends Controller
      */
     public function store(PostStoreFormRequest $request)
     {
-        // $request->validate(['title' => 'required|unique:posts|max:255|min:3','content' => 'required',]);
+
         
-        $post = Post::create($request->all());
+        $post = new Post();
+        
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->category_id = $request->category_id;
+        $post->is_active = $request->is_active;
+        $post->user_id = Auth::id();
+        $post->save();
+
         $post->tags()->sync((array)$request->input('tag'));
 
-        // Post::create(['title' => $request->title, 'content' => $request->content, 'category_id' => $request->category_id, is_active' => $request->is_active!= '' ?$request->get('is_active') : True]);
+        if($request->get('image'))
+        {
+            $image = $request->get('image');
+            $picture_name = $request->get('name');
+            $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+            \Image::make($request->get('image'))->save(public_path('images/').$name);
+        }
+
+        $picture= new Picture();
+        $picture->file_name = $name;
+        $picture->name = $picture_name;
+        $picture->save();
+
+        $pictureId = \App\Picture::all()->last()->id;
+
+        $post->pictures()->sync($pictureId, false);
 
         return redirect()->route('posts.index')->with('success','Post created successfully.');
     }
