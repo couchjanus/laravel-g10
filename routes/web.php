@@ -20,6 +20,8 @@ Route::get('/about', 'AboutController');
 
 Route::get('blog', 'BlogController@index')->name('blog');
 
+Route::get('search', 'BlogController@search')->name('blog.search');
+
 Route::get('myblog', 'BlogController@list')->name('blog.list');
 Route::get('myblog/{post}/edit', 'BlogController@edit')->name('blog.edit');
 Route::put('myblog/{post}', 'BlogController@update')->name('blog.update');
@@ -27,6 +29,7 @@ Route::put('myblog/{post}', 'BlogController@update')->name('blog.update');
 Route::get('blogcat/{id}', 'BlogController@getPostsByCategory')->name('blog.category');
 Route::get('blog/{slug}', 
 ['uses' => 'BlogController@showBySlug', 'as' => 'post.show']);
+
 
 Route::resource('categories','Admin\CategoryController');
 Route::resource('tags','Admin\TagController');
@@ -67,6 +70,3 @@ Route::get('admin', 'Admin\DashboardController')->middleware('auth', 'admin');
 
 Route::resource('pictures','Admin\PictureController');
 
-Route::get('vue', function () {
-    return view('home.vue');
-});

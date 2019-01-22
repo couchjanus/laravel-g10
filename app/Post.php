@@ -4,10 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Laravel\Scout\Searchable;
 
 class Post extends Model
 {
     use Sluggable;
+    use Searchable;
     
     protected $fillable = [
         'title', 'content', 'is_active', 'category_id'
@@ -42,6 +44,11 @@ class Post extends Model
     public function pictures()
     {
         return $this->belongsToMany(Picture::class);
+    }
+
+    public function shouldBeSearchable()
+    {
+        return $this->is_active;
     }
  
 

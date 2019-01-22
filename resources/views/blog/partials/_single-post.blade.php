@@ -2,8 +2,11 @@
 <p>Posted on {{ date('d F Y', strtotime($post->created_at)) }}</p>
 <hr>
 
-<img class="img-fluid rounded" src="/images/{{ $post->pictures[0]->file_name }}" alt="">
+@isset($post->pictures->file_name)
+    // $records is defined and is not null...
 
+<img class="img-fluid rounded" src="/images/{{ $post->pictures->file_name }}" alt="">
+@endisset
 <!-- Post Content -->
 <p class="lead">{{ $post->content }}</p>
 <hr>

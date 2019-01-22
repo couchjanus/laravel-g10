@@ -121,4 +121,25 @@ class BlogController extends Controller
         return view('blog.index', ['posts' => $posts]);
     }
 
+    // public function search(Request $request)
+    // {
+    //     $query = $request->q;
+
+    //     $posts = Post::query()->where('content', 'like', "%{$query}%")
+    //         ->orWhere('title', 'like', "%{$query}%")
+    //         ->paginate(5);
+    //     return view('blog.index',compact('posts'));
+    // }
+
+    
+
+    public function search(Request $request)
+    {
+        if($request->has('q')){
+            $posts = Post::search($request->get('q'))->paginate(5);
+    	}else{
+    		$posts = User::paginate(5);
+        }
+        return view('blog.index',compact('posts'));
+    }
 }
