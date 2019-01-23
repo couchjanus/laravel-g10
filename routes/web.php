@@ -50,4 +50,6 @@ Route::any('foom', function () {
 Route::match(['get', 'post'], '/foobar', function () {
     return 'Hello FooBar!';
 });
+
+Auth::routes();
   
